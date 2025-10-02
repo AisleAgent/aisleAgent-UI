@@ -5,8 +5,8 @@ import { DASHBOARD_COPY } from './dashboardStatics'
 export default function Dashboard() {
   const { user } = useAuthUser()
 
-  const displayName = user?.displayName || 'User'
-  const photoURL = user?.photoURL || undefined
+  const displayName = user?.name || 'User'
+  const photoURL = user?.picture || undefined
 
   return (
     <div className="min-h-screen bg-gray-50">
