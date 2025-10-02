@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, type User } from 'firebase/auth'
 import { getFirebaseApp } from './firebase'
-import { getCurrentUser, isAuthenticated } from './auth'
 
 interface AuthUser {
   id: string
@@ -16,27 +15,23 @@ export function useAuthUser() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Check if user is authenticated with backend
-    if (isAuthenticated()) {
-      const userDetails = getCurrentUser()
-      setUser(userDetails)
-      setLoading(false)
-    } else {
-      // Listen to Firebase auth changes for initial sign-in
-      const auth = getAuth(getFirebaseApp())
-      const unsub = onAuthStateChanged(auth, (firebaseUser) => {
-        if (firebaseUser && isAuthenticated()) {
-          // User is signed in with Firebase and has backend auth
-          const userDetails = getCurrentUser()
-          setUser(userDetails)
-        } else {
-          // User is not authenticated
-          setUser(null)
+    const auth = getAuth(getFirebaseApp())
+    const unsub = onAuthStateChanged(auth, (firebaseUser: User | null) => {
+      if (firebaseUser) {
+        const authUser: AuthUser = {
+          id: firebaseUser.uid,
+          email: firebaseUser.email || '',
+          name: firebaseUser.displayName || 'User',
+          picture: firebaseUser.photoURL || undefined,
+          emailVerified: firebaseUser.emailVerified,
         }
-        setLoading(false)
-      })
-      return () => unsub()
-    }
+        setUser(authUser)
+      } else {
+        setUser(null)
+      }
+      setLoading(false)
+    })
+    return () => unsub()
   }, [])
 
   return { user, loading }

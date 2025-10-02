@@ -34,29 +34,29 @@ export async function signInWithGoogle(): Promise<void> {
   }
   
   // Call backend to verify token and get user details
-  try {
-    const response = await apiClient.post<BackendAuthResponse>('/api/v1/auth/google/verify', {
-      idToken
-    })
+  // try {
+  //   const response = await apiClient.post<BackendAuthResponse>('/api/v1/auth/google/verify', {
+  //     idToken
+  //   })
     
-    const { user, token, refreshToken } = response.data
+  //   const { user, token, refreshToken } = response.data
     
-    // Store user details and tokens
-    localStorage.setItem('auth_token', token)
-    localStorage.setItem('user_details', JSON.stringify(user))
+  //   // Store user details and tokens
+  //   localStorage.setItem('auth_token', token)
+  //   localStorage.setItem('user_details', JSON.stringify(user))
     
-    if (refreshToken) {
-      localStorage.setItem('refresh_token', refreshToken)
-    }
+  //   if (refreshToken) {
+  //     localStorage.setItem('refresh_token', refreshToken)
+  //   }
     
-    console.log('User authenticated successfully:', user)
-  } catch (error) {
-    console.error('Backend authentication failed:', error)
-    // Clean up on failure
-    localStorage.removeItem('google_access_token')
-    await signOut(auth)
-    throw new Error('Authentication with backend failed')
-  }
+  //   console.log('User authenticated successfully:', user)
+  // } catch (error) {
+  //   console.error('Backend authentication failed:', error)
+  //   // Clean up on failure
+  //   localStorage.removeItem('google_access_token')
+  //   await signOut(auth)
+  //   throw new Error('Authentication with backend failed')
+  // }
 }
 
 export async function signOutUser(): Promise<void> {
