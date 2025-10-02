@@ -1,6 +1,7 @@
 import { useAuthUser } from '../../lib/useAuthUser'
 import { signOutUser } from '../../lib/auth'
 import { DASHBOARD_COPY } from './dashboardStatics'
+import Calendar from '../calendar/Calendar'
 
 export default function Dashboard() {
   const { user } = useAuthUser()
@@ -33,8 +34,28 @@ export default function Dashboard() {
         </div>
       </nav>
       <main className="mx-auto max-w-5xl px-4 py-8">
-        <h1 className="text-2xl font-semibold text-gray-900">{DASHBOARD_COPY.welcomePrefix} {displayName}</h1>
-        <p className="mt-2 text-gray-600">{DASHBOARD_COPY.signedInNote}</p>
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold text-gray-900">{DASHBOARD_COPY.welcomePrefix} {displayName}</h1>
+          <p className="mt-2 text-gray-600">{DASHBOARD_COPY.signedInNote}</p>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Calendar />
+          
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+            <div className="space-y-3">
+              <button className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
+                <div className="font-medium text-gray-900">Schedule a Meeting</div>
+                <div className="text-sm text-gray-600">Create a new calendar event</div>
+              </button>
+              <button className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
+                <div className="font-medium text-gray-900">View Full Calendar</div>
+                <div className="text-sm text-gray-600">Open Google Calendar</div>
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   )
