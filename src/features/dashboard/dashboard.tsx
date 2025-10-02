@@ -6,8 +6,8 @@ import Calendar from '../calendar/Calendar'
 export default function Dashboard() {
   const { user } = useAuthUser()
 
-  const displayName = user?.displayName || 'User'
-  const photoURL = user?.photoURL || undefined
+  const displayName = user?.name || 'User'
+  const photoURL = user?.picture || undefined
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -39,20 +39,44 @@ export default function Dashboard() {
           <p className="mt-2 text-gray-600">{DASHBOARD_COPY.signedInNote}</p>
         </div>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Calendar />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <Calendar />
+          </div>
           
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-            <div className="space-y-3">
-              <button className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
-                <div className="font-medium text-gray-900">Schedule a Meeting</div>
-                <div className="text-sm text-gray-600">Create a new calendar event</div>
-              </button>
-              <button className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
-                <div className="font-medium text-gray-900">View Full Calendar</div>
-                <div className="text-sm text-gray-600">Open Google Calendar</div>
-              </button>
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+              <div className="space-y-3">
+                <button 
+                  onClick={() => window.open('https://calendar.google.com/calendar/u/0/r/eventedit', '_blank')}
+                  className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="font-medium text-gray-900">📝 Create Event</div>
+                  <div className="text-sm text-gray-600">Add a new calendar event</div>
+                </button>
+                <button 
+                  onClick={() => window.open('https://calendar.google.com', '_blank')}
+                  className="w-full text-left p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="font-medium text-gray-900">📅 Full Calendar</div>
+                  <div className="text-sm text-gray-600">Open Google Calendar</div>
+                </button>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">Calendar Stats</h2>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Synced with</span>
+                  <span className="font-medium">Google Calendar</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Last updated</span>
+                  <span className="font-medium">Just now</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

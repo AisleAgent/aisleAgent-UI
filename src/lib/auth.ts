@@ -6,15 +6,24 @@ export async function signInWithGoogle(): Promise<void> {
   const auth = getAuth(app)
   const provider = new GoogleAuthProvider()
   
-  // Request Calendar scope for accessing Google Calendar
+  // Request calendar permissions
   provider.addScope('https://www.googleapis.com/auth/calendar.readonly')
+  provider.addScope('https://www.googleapis.com/auth/calendar.events.readonly')
   
-  const result = await signInWithPopup(auth, provider)
-  
-  // Store the access token for Calendar API calls
-  const credential = GoogleAuthProvider.credentialFromResult(result)
-  if (credential?.accessToken) {
-    localStorage.setItem('google_access_token', credential.accessToken)
+  try {
+    const result = await signInWithPopup(auth, provider)
+    
+    // Store Google access token for Calendar API
+    const credential = GoogleAuthProvider.credentialFromResult(result)
+    if (credential?.accessToken) {
+      localStorage.setItem('google_access_token', credential.accessToken)
+      console.log('✅ Google access token stored for Calendar API')
+    } else {
+      console.warn('⚠️ No access token received from Google')
+    }
+  } catch (error: any) {
+    console.error('❌ Google sign-in failed:', error)
+    throw error
   }
 }
 
