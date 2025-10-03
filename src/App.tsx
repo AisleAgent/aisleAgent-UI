@@ -1,12 +1,7 @@
-import { useState } from 'react'
-import Login from './features/login/login'
+import { AppRoutes } from './routes/index.tsx'
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <Login />
-  )
+  return <AppRoutes />
 }
 
 export default App
