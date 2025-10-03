@@ -1,32 +1,60 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { LOGIN_COPY } from './loginStatics'
-import { signInWithGoogle } from '../../lib/auth'
 import { GoogleIcon } from '../../icons/Google'
+import { useAuth } from '../../lib/authContext'
+import { ROUTES } from '../../routes/routeStatics'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Loader2 } from 'lucide-react'
 
 export function Login() {
+  const { signInWithGoogle, loading: authLoading } = useAuth()
+  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
+
   const handleGoogleSignIn = async () => {
+    setError(null)
     try {
       await signInWithGoogle()
+      console.log('✅ Sign-in successful, redirecting to dashboard...')
+      navigate(ROUTES.DASHBOARD)
     } catch (err) {
       console.error('Google sign-in failed', err)
-      alert('Google sign-in failed')
+      setError(err instanceof Error ? err.message : 'Google sign-in failed')
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-lg">
-        <h1 className="text-xl font-semibold text-gray-900">{LOGIN_COPY.title}</h1>
-        <p className="mt-1 text-sm text-gray-600">{LOGIN_COPY.subtitle}</p>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl">{LOGIN_COPY.title}</CardTitle>
+          <CardDescription>{LOGIN_COPY.subtitle}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {error && (
+            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+              <p className="text-sm text-destructive">{error}</p>
+            </div>
+          )}
 
-        <button
-          type="button"
-          onClick={handleGoogleSignIn}
-          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          <GoogleIcon className="h-5 w-5" />
-          {LOGIN_COPY.googleCta}
-        </button>
-      </div>
+          <Button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={authLoading}
+            className="w-full"
+            variant="outline"
+          >
+            {authLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <GoogleIcon className="mr-2 h-4 w-4" />
+            )}
+            {authLoading ? 'Signing in...' : LOGIN_COPY.googleCta}
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   )
 }

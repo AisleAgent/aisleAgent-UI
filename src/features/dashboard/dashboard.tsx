@@ -1,40 +1,45 @@
-import { useAuthUser } from '../../lib/useAuthUser'
-import { signOutUser } from '../../lib/auth'
+import { useAuth } from '../../lib/authContext'
+import { Navbar } from '../../components/Navbar'
 import { DASHBOARD_COPY } from './dashboardStatics'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function Dashboard() {
-  const { user } = useAuthUser()
+  const { userData } = useAuth()
 
-  const displayName = user?.name || 'User'
-  const photoURL = user?.picture || undefined
+  const displayName = userData?.name || 'User'
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-gray-200">
-        <div className="mx-auto max-w-5xl px-4 h-14 flex items-center justify-between">
-          <div className="text-lg font-semibold text-gray-900">{DASHBOARD_COPY.navbarTitle}</div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-700">{displayName}</span>
-            {photoURL ? (
-              <img src={photoURL} alt={displayName} className="h-9 w-9 rounded-full border border-gray-200" />
-            ) : (
-              <div className="h-9 w-9 rounded-full bg-indigo-600 text-white grid place-items-center text-sm">
-                {displayName.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <button
-              type="button"
-              onClick={() => signOutUser()}
-              className="ml-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              {DASHBOARD_COPY.logout}
-            </button>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-background">
+      <Navbar />
       <main className="mx-auto max-w-5xl px-4 py-8">
-        <h1 className="text-2xl font-semibold text-gray-900">{DASHBOARD_COPY.welcomePrefix} {displayName}</h1>
-        <p className="mt-2 text-gray-600">{DASHBOARD_COPY.signedInNote}</p>
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">{DASHBOARD_COPY.welcomePrefix} {displayName}</h1>
+            <p className="mt-2 text-muted-foreground">{DASHBOARD_COPY.signedInNote}</p>
+          </div>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Welcome to your Dashboard</CardTitle>
+              <CardDescription>
+                You are successfully authenticated and can access all features.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Email:</strong> {userData?.email}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <strong>User Type:</strong> {userData?.userType || 'Standard'}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <strong>Status:</strong> {userData?.isActive ? 'Active' : 'Inactive'}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   )
