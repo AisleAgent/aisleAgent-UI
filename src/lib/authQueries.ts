@@ -43,7 +43,8 @@ export function useFirebaseUser() {
       const auth = getAuth(getFirebaseApp())
       return auth.currentUser
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 0, // Always fresh to reflect auth state changes
+    refetchOnWindowFocus: true,
   })
 }
 
@@ -55,7 +56,8 @@ export function useStoredUser() {
       const storedUser = localStorage.getItem('user_details')
       return storedUser ? JSON.parse(storedUser) as AuthUser : null
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 0, // Always fresh to reflect auth state changes
+    refetchOnWindowFocus: true,
   })
 }
 
@@ -144,8 +146,10 @@ export function useSignOut() {
       localStorage.removeItem('auth_token')
       localStorage.removeItem('user_details')
       
-      // Clear all queries
-      queryClient.clear()
+      // Invalidate and clear all auth-related queries
+      queryClient.invalidateQueries({ queryKey: authKeys.all })
+      queryClient.setQueryData(authKeys.user(), null)
+      queryClient.setQueryData(authKeys.firebase(), null)
       
       console.log('User signed out successfully.')
     },

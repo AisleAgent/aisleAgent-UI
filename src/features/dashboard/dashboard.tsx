@@ -1,7 +1,7 @@
 import { useAuth } from '../../lib/authContext'
 import { Navbar } from '../../components/Navbar'
 import { DASHBOARD_COPY } from './dashboardStatics'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, Descriptions, Tag } from 'antd'
 
 export default function Dashboard() {
   const { userData } = useAuth()
@@ -9,35 +9,40 @@ export default function Dashboard() {
   const displayName = userData?.name || 'User'
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
       <main className="mx-auto max-w-5xl px-4 py-8">
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">{DASHBOARD_COPY.welcomePrefix} {displayName}</h1>
-            <p className="mt-2 text-muted-foreground">{DASHBOARD_COPY.signedInNote}</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              {DASHBOARD_COPY.welcomePrefix} {displayName}
+            </h1>
+            <p className="mt-2 text-gray-600">
+              {DASHBOARD_COPY.signedInNote}
+            </p>
           </div>
           
-          <Card>
-            <CardHeader>
-              <CardTitle>Welcome to your Dashboard</CardTitle>
-              <CardDescription>
-                You are successfully authenticated and can access all features.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  <strong>Email:</strong> {userData?.email}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  <strong>User Type:</strong> {userData?.userType || 'Standard'}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  <strong>Status:</strong> {userData?.isActive ? 'Active' : 'Inactive'}
-                </p>
-              </div>
-            </CardContent>
+          <Card 
+            title="Welcome to your Dashboard" 
+            className="shadow-lg"
+          >
+            <p className="text-gray-600 mb-4">
+              You are successfully authenticated and can access all features.
+            </p>
+            
+            <Descriptions column={1} bordered>
+              <Descriptions.Item label="Email">
+                {userData?.email}
+              </Descriptions.Item>
+              <Descriptions.Item label="User Type">
+                <Tag color="blue">{userData?.userType || 'Standard'}</Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="Status">
+                <Tag color={userData?.isActive ? 'green' : 'red'}>
+                  {userData?.isActive ? 'Active' : 'Inactive'}
+                </Tag>
+              </Descriptions.Item>
+            </Descriptions>
           </Card>
         </div>
       </main>

@@ -3,6 +3,7 @@ import { useAuth } from '../lib/authContext'
 import Login from '../features/login/login'
 import Dashboard from '../features/dashboard/dashboard'
 import { ROUTES, ROUTE_COPY } from './routeStatics'
+import { Spin } from 'antd'
 
 // Protected Route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -10,8 +11,8 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-muted-foreground">{ROUTE_COPY.REDIRECTING_TO_LOGIN}</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Spin size="large" tip={ROUTE_COPY.REDIRECTING_TO_LOGIN} />
       </div>
     )
   }
@@ -25,8 +26,8 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-muted-foreground">{ROUTE_COPY.REDIRECTING_TO_DASHBOARD}</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Spin size="large" tip={ROUTE_COPY.REDIRECTING_TO_DASHBOARD} />
       </div>
     )
   }

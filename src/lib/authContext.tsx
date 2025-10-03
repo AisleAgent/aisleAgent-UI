@@ -25,9 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Sync Firebase auth state with React Query
   useEffect(() => {
     const auth = getAuth(getFirebaseApp())
-    const unsubscribe = onAuthStateChanged(auth, () => {
-      // This will trigger the useFirebaseUser query to refetch
-      // React Query will handle the state updates
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      // Force refetch of Firebase user query when auth state changes
+      if (!user) {
+        // User signed out - clear all auth data
+        localStorage.removeItem('auth_token')
+        localStorage.removeItem('user_details')
+      }
     })
     return () => unsubscribe()
   }, [])

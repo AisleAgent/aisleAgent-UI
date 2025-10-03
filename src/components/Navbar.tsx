@@ -2,9 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/authContext'
 import { DASHBOARD_COPY } from '../features/dashboard/dashboardStatics'
 import { ROUTES } from '../routes/routeStatics'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ThemeToggle } from './theme-toggle'
+import { Button, Avatar, Space } from 'antd'
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons'
 
 export function Navbar() {
   const { userData, signOutUser } = useAuth()
@@ -14,30 +13,32 @@ export function Navbar() {
   const photoURL = userData?.picture || undefined
 
   return (
-    <nav className="sticky top-0 z-10 bg-background/80 backdrop-blur border-b">
+    <nav className="sticky top-0 z-10 bg-white/80 backdrop-blur border-b border-gray-200">
       <div className="mx-auto max-w-5xl px-4 h-14 flex items-center justify-between">
-        <div className="text-lg font-semibold text-foreground">{DASHBOARD_COPY.navbarTitle}</div>
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <span className="text-sm text-muted-foreground">{displayName}</span>
-          <Avatar className="h-9 w-9">
-            <AvatarImage src={photoURL} alt={displayName} />
-            <AvatarFallback className="bg-primary text-primary-foreground">
-              {displayName.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+        <div className="text-lg font-semibold text-gray-900">
+          {DASHBOARD_COPY.navbarTitle}
+        </div>
+        <Space size="middle">
+          <span className="text-sm text-gray-600">
+            {displayName}
+          </span>
+          <Avatar 
+            size={36}
+            src={photoURL}
+            icon={<UserOutlined />}
+          />
           <Button
-            type="button"
+            type="default"
             onClick={() => {
               signOutUser()
               navigate(ROUTES.LOGIN)
             }}
-            variant="outline"
-            size="sm"
+            icon={<LogoutOutlined />}
+            size="small"
           >
             {DASHBOARD_COPY.logout}
           </Button>
-        </div>
+        </Space>
       </div>
     </nav>
   )
