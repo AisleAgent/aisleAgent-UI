@@ -390,14 +390,14 @@ export function Leads() {
                               <Button
                                 type={type === 'month' ? 'primary' : 'default'}
                                 size="small"
-                                onClick={() => onTypeChange(type === 'month' ? 'date' : 'month')}
+                                onClick={() => onTypeChange(type === 'month' ? 'date' as any : 'month' as any)}
                               >
                                 Month
                               </Button>
                               <Button
                                 type={type === 'year' ? 'primary': 'default'}
                                 size="small"
-                                onClick={() => onTypeChange(type === 'year' ? 'date' : 'year')}
+                                onClick={() => onTypeChange(type === 'year' ? 'date' as any : 'year' as any)}
                               >
                                 Year
                               </Button>

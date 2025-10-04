@@ -18,7 +18,7 @@ interface UserProfileData {
 
 export function Onboarding() {
   const [userProfileData, setUserProfileData] = useState<UserProfileData>({})
-  const [currentView, setCurrentView] = useState<ONBOARDING_SCREENS>(ONBOARDING_SCREENS.BUSINESS_TYPE)
+  const [currentView, setCurrentView] = useState<keyof typeof ONBOARDING_SCREENS>(ONBOARDING_SCREENS.BUSINESS_TYPE)
   const navigate = useNavigate()
 
 
