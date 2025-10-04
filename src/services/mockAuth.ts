@@ -1,4 +1,4 @@
-import type { VerifyResponse } from '../lib/auth'
+import type { VerifyResponse } from '../lib/authQueries'
 
 // Mock user data for development
 const mockUser = {

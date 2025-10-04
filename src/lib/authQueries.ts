@@ -4,7 +4,7 @@ import { getFirebaseApp } from './firebase'
 import { apiClient } from './axios'
 import { mockVerifyGoogleToken, shouldUseMock } from '../services/mockAuth'
 
-interface VerifyResponse {
+export interface VerifyResponse {
   accessToken: string
   tokenType: string
   expiresIn: number

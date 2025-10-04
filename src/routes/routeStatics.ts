@@ -3,6 +3,7 @@ export const ROUTES = {
   LOGIN: '/login',
   
   // Protected routes
+  ONBOARDING: '/onboarding',
   DASHBOARD: '/dashboard',
   
   // Root and fallback

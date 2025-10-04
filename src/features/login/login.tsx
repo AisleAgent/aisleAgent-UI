@@ -4,7 +4,7 @@ import { LOGIN_COPY } from './loginStatics'
 import { GoogleIcon } from '../../icons/Google'
 import { useAuth } from '../../lib/authContext'
 import { ROUTES } from '../../routes/routeStatics'
-import { Button, Card, Alert, Spin } from 'antd'
+import { Button, Card, Alert } from 'antd'
 
 export function Login() {
   const { signInWithGoogle, loading: authLoading } = useAuth()
@@ -15,8 +15,8 @@ export function Login() {
     setError(null)
     try {
       await signInWithGoogle()
-      console.log('✅ Sign-in successful, redirecting to dashboard...')
-      navigate(ROUTES.DASHBOARD)
+      console.log('✅ Sign-in successful, redirecting to onboarding...')
+      navigate(ROUTES.ONBOARDING)
     } catch (err) {
       console.error('Google sign-in failed', err)
       setError(err instanceof Error ? err.message : 'Google sign-in failed')
