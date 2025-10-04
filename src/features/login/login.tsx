@@ -4,9 +4,7 @@ import { LOGIN_COPY } from './loginStatics'
 import { GoogleIcon } from '../../icons/Google'
 import { useAuth } from '../../lib/authContext'
 import { ROUTES } from '../../routes/routeStatics'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Loader2 } from 'lucide-react'
+import { Button, Card, Alert } from 'antd'
 
 export function Login() {
   const { signInWithGoogle, loading: authLoading } = useAuth()
@@ -17,8 +15,8 @@ export function Login() {
     setError(null)
     try {
       await signInWithGoogle()
-      console.log('✅ Sign-in successful, redirecting to dashboard...')
-      navigate(ROUTES.DASHBOARD)
+      console.log('✅ Sign-in successful, redirecting to onboarding...')
+      navigate(ROUTES.ONBOARDING)
     } catch (err) {
       console.error('Google sign-in failed', err)
       setError(err instanceof Error ? err.message : 'Google sign-in failed')
@@ -26,34 +24,38 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl">{LOGIN_COPY.title}</CardTitle>
-          <CardDescription>{LOGIN_COPY.subtitle}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <Card className="w-full max-w-sm shadow-lg">
+        <div className="space-y-4">
+          <div className="text-center">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+              {LOGIN_COPY.title}
+            </h1>
+            <p className="text-gray-600">
+              {LOGIN_COPY.subtitle}
+            </p>
+          </div>
+
           {error && (
-            <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-              <p className="text-sm text-destructive">{error}</p>
-            </div>
+            <Alert
+              message={error}
+              type="error"
+              showIcon
+              closable
+              onClose={() => setError(null)}
+            />
           )}
 
           <Button
-            type="button"
+            type="default"
             onClick={handleGoogleSignIn}
-            disabled={authLoading}
-            className="w-full"
-            variant="outline"
+            loading={authLoading}
+            className="w-full h-12 flex items-center justify-center"
+            icon={!authLoading && <GoogleIcon className="h-5 w-5" />}
           >
-            {authLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <GoogleIcon className="mr-2 h-4 w-4" />
-            )}
             {authLoading ? 'Signing in...' : LOGIN_COPY.googleCta}
           </Button>
-        </CardContent>
+        </div>
       </Card>
     </div>
   )
