@@ -1,22 +1,19 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { LOGIN_COPY } from './loginStatics'
 import { GoogleIcon } from '../../icons/Google'
 import { useAuth } from '../../lib/authContext'
-import { ROUTES } from '../../routes/routeStatics'
 import { Button, Card, Alert } from 'antd'
 
 export function Login() {
   const { signInWithGoogle, loading: authLoading } = useAuth()
   const [error, setError] = useState<string | null>(null)
-  const navigate = useNavigate()
 
   const handleGoogleSignIn = async () => {
     setError(null)
     try {
       await signInWithGoogle()
-      console.log('✅ Sign-in successful, redirecting to onboarding...')
-      navigate(ROUTES.ONBOARDING)
+      // The verification and redirect will be handled by the auth context
+      // after successful token verification
     } catch (err) {
       console.error('Google sign-in failed', err)
       setError(err instanceof Error ? err.message : 'Google sign-in failed')
