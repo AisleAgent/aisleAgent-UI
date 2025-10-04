@@ -1,4 +1,17 @@
-import type { VerifyResponse } from '../lib/authQueries'
+// Define VerifyResponse interface locally since it's commented out in authQueries
+interface VerifyResponse {
+  accessToken: string
+  tokenType: string
+  expiresIn: number
+  user: {
+    id: number
+    email: string
+    fullName: string
+    userType: string
+    profilePictureUrl?: string
+    isActive: boolean
+  }
+}
 
 // Mock user data for development
 const mockUser = {
