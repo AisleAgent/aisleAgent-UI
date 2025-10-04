@@ -81,8 +81,8 @@ export function AppRoutes() {
           </ProtectedRoute>
         } 
       />
-      <Route path={ROUTES.ROOT} element={<Navigate to={ROUTES.ONBOARDING} replace />} />
-      <Route path="*" element={<Navigate to={ROUTES.ONBOARDING} replace />} />
+      <Route path={ROUTES.ROOT} element={<Navigate to={ROUTES.LEADS} replace />} />
+      <Route path="*" element={<Navigate to={ROUTES.LEADS} replace />} />
     </Routes>
   )
 }

@@ -24,7 +24,7 @@ export function Navbar() {
       <div className="mx-auto max-w-5xl px-4 h-14 flex items-center justify-between">
         {/* Left: Brand */}
         <div className="text-lg font-semibold text-gray-900">
-          Seravaya
+          Servaya
         </div>
 
         {/* Center: Navigation */}
