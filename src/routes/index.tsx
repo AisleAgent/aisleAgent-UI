@@ -3,6 +3,8 @@ import { useAuth } from '../lib/authContext'
 import Login from '../features/login/login'
 import Onboarding from '../features/onboarding/onboarding'
 import Dashboard from '../features/dashboard/dashboard'
+import Leads from '../features/leads/Leads'
+import Calendar from '../features/calendar/Calendar'
 import { ROUTES } from './routeStatics'
 import { Spin } from 'antd'
 
@@ -63,8 +65,24 @@ export function AppRoutes() {
           </ProtectedRoute>
         } 
       />
+      <Route 
+        path={ROUTES.LEADS} 
+        element={
+          <ProtectedRoute>
+            <Leads />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path={ROUTES.CALENDAR} 
+        element={
+          <ProtectedRoute>
+            <Calendar />
+          </ProtectedRoute>
+        } 
+      />
       <Route path={ROUTES.ROOT} element={<Navigate to={ROUTES.ONBOARDING} replace />} />
-      <Route path={ROUTES.CATCH_ALL} element={<Navigate to={ROUTES.ONBOARDING} replace />} />
+      <Route path="*" element={<Navigate to={ROUTES.ONBOARDING} replace />} />
     </Routes>
   )
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Card } from 'antd'
+import { Card } from 'antd'
 import { Navbar } from '../../components/Navbar'
 
 interface UserProfileData {
@@ -31,10 +31,10 @@ function CategoryForm({ onNext, initialData }: CategoryFormProps) {
     initialData?.businessType || ''
   )
 
-  const handleNext = () => {
-    if (selectedCategory) {
-      onNext({ businessType: selectedCategory })
-    }
+  const handleCardClick = (categoryValue: string) => {
+    setSelectedCategory(categoryValue)
+    // Automatically proceed when a category is selected
+    onNext({ businessType: categoryValue })
   }
 
   return (
@@ -79,7 +79,7 @@ function CategoryForm({ onNext, initialData }: CategoryFormProps) {
                   flex: '1 1 200px',
                   maxWidth: '300px'
                 }}
-                onClick={() => setSelectedCategory(category.value)}
+                onClick={() => handleCardClick(category.value)}
               >
                 <div className="text-center py-4">
                   <div className={`text-lg font-medium ${
@@ -95,18 +95,6 @@ function CategoryForm({ onNext, initialData }: CategoryFormProps) {
           </div>
         </div>
 
-        {/* Next Button */}
-        <div className="flex justify-end w-full max-w-4xl">
-          <Button
-            type="primary"
-            size="large"
-            onClick={handleNext}
-            disabled={!selectedCategory}
-            className="px-8 py-2 h-auto"
-          >
-            Next
-          </Button>
-        </div>
       </div>
     </div>
   )

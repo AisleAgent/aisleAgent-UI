@@ -35,7 +35,7 @@ export function Onboarding() {
     setUserProfileData(prev => ({ ...prev, ...data }))
     // Here you would typically save to backend
     console.log('Final user profile data:', { ...userProfileData, ...data })
-    navigate(ROUTES.DASHBOARD)
+    navigate(ROUTES.LEADS)
   }
 
   const renderCurrentView = () => {

@@ -5,6 +5,8 @@ export const ROUTES = {
   // Protected routes
   ONBOARDING: '/onboarding',
   DASHBOARD: '/dashboard',
+  LEADS: '/leads',
+  CALENDAR: '/calendar',
   
   // Root and fallback
   ROOT: '/',
