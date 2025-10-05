@@ -9,6 +9,7 @@ export const ROUTES = {
   LEAD_DETAILS: '/leads/:id',
   LEAD_PROGRESS: '/leads/progress/:id',
   CALENDAR: '/calendar',
+  FIXED_COST: '/fixed-cost',
   
   // Root and fallback
   ROOT: '/',

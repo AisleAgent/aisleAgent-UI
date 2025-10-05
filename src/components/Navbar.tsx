@@ -16,7 +16,8 @@ export function Navbar() {
   const navigationItems = [
     { key: ROUTES.DASHBOARD, label: 'Dashboard' },
     { key: ROUTES.LEADS, label: 'Leads' },
-    { key: ROUTES.CALENDAR, label: 'Calendar' }
+    { key: ROUTES.CALENDAR, label: 'Calendar' },
+    { key: ROUTES.FIXED_COST, label: 'Fixed Cost' }
   ]
 
   return (
