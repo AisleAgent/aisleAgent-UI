@@ -6,6 +6,8 @@ export const ROUTES = {
   ONBOARDING: '/onboarding',
   DASHBOARD: '/dashboard',
   LEADS: '/leads',
+  LEAD_DETAILS: '/leads/:id',
+  LEAD_PROGRESS: '/leads/progress/:id',
   CALENDAR: '/calendar',
   
   // Root and fallback

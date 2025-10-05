@@ -1,46 +1,82 @@
+import { lazy, Suspense, memo } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from '../lib/authContext'
-import Login from '../features/login/login'
-import Onboarding from '../features/onboarding/onboarding'
-import Dashboard from '../features/dashboard/dashboard'
-import Leads from '../features/leads/Leads'
-import Calendar from '../features/calendar/Calendar'
 import { ROUTES } from './routeStatics'
 import { Spin } from 'antd'
 
-// Protected Route component
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
+/**
+ * Lazy-loaded route components for code splitting
+ * Improves initial load time by splitting code into smaller chunks
+ * Components are loaded on-demand when routes are accessed
+ */
+const Login = lazy(() => import('../features/login/login'))
+const Onboarding = lazy(() => import('../features/onboarding/onboarding'))
+const Dashboard = lazy(() => import('../features/dashboard/dashboard'))
+const Leads = lazy(() => import('../features/leads/Leads'))
+const LeadDetails = lazy(() => import('../features/leads/LeadDetails'))
+const LeadProgress = lazy(() => import('../features/leads/LeadProgress'))
+const Calendar = lazy(() => import('../features/calendar/Calendar'))
+
+/**
+ * Loading fallback component for Suspense
+ * Displays centered spinner while lazy components load
+ */
+const LoadingFallback = memo(() => (
+  <div 
+    className="min-h-screen flex items-center justify-center bg-gray-50"
+    role="status"
+    aria-label="Loading content"
+  >
+    <Spin size="large" tip="Loading..." />
+  </div>
+))
+LoadingFallback.displayName = 'LoadingFallback'
+
+/**
+ * Protected Route Component
+ * Restricts access to authenticated users only
+ * Redirects to login if user is not authenticated
+ * 
+ * @param children - Child components to render if authenticated
+ */
+const ProtectedRoute = memo(({ children }: { children: React.ReactNode }) => {
   const { loading, isAuthenticated } = useAuth()
   
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Spin size="large" tip="Loading..." />
-      </div>
-    )
+    return <LoadingFallback />
   }
   
   return isAuthenticated() ? <>{children}</> : <Navigate to={ROUTES.LOGIN} replace />
-}
+})
+ProtectedRoute.displayName = 'ProtectedRoute'
 
-// Public Route component (redirects to onboarding if already authenticated)
-function PublicRoute({ children }: { children: React.ReactNode }) {
+/**
+ * Public Route Component
+ * Redirects authenticated users to onboarding
+ * Allows unauthenticated users to access public pages
+ * 
+ * @param children - Child components to render if not authenticated
+ */
+const PublicRoute = memo(({ children }: { children: React.ReactNode }) => {
   const { loading, isAuthenticated } = useAuth()
   
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Spin size="large" tip="Redirecting..." />
-      </div>
-    )
+    return <LoadingFallback />
   }
   
   return isAuthenticated() ? <Navigate to={ROUTES.ONBOARDING} replace /> : <>{children}</>
-}
+})
+PublicRoute.displayName = 'PublicRoute'
 
+/**
+ * Application Routes Component
+ * Defines all application routes with lazy loading and Suspense
+ * Implements code splitting for optimal performance
+ */
 export function AppRoutes() {
   return (
-    <Routes>
+    <Suspense fallback={<LoadingFallback />}>
+      <Routes>
       <Route 
         path={ROUTES.LOGIN} 
         element={
@@ -74,6 +110,22 @@ export function AppRoutes() {
         } 
       />
       <Route 
+        path={ROUTES.LEAD_DETAILS} 
+        element={
+          <ProtectedRoute>
+            <LeadDetails />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path={ROUTES.LEAD_PROGRESS} 
+        element={
+          <ProtectedRoute>
+            <LeadProgress />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
         path={ROUTES.CALENDAR} 
         element={
           <ProtectedRoute>
@@ -83,6 +135,7 @@ export function AppRoutes() {
       />
       <Route path={ROUTES.ROOT} element={<Navigate to={ROUTES.LEADS} replace />} />
       <Route path="*" element={<Navigate to={ROUTES.LEADS} replace />} />
-    </Routes>
+      </Routes>
+    </Suspense>
   )
 }

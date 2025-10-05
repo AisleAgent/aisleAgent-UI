@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { Navbar } from '../../components/Navbar'
 import { Card, Table, Tag, Select, Input, Button, Dropdown, Checkbox, Calendar, Popover } from 'antd'
 import { SearchOutlined, ClearOutlined, FilterOutlined, DownOutlined, CalendarOutlined } from '@ant-design/icons'
+import { LEAD_STAGES } from '../../lib/enums'
 
 const { Option } = Select
 
@@ -30,7 +32,7 @@ const leadsData = [
     salesPerson: 'Maria Garcia',
     leadCreationDate: '2023-07-14',
     source: 'Google',
-    stage: 'Awaiting Quote',
+    stage: 'Booked',
     contactNo: '+1-555-987-6543',
     emailAddress: 'ethan.bennett@email.c'
   },
@@ -78,24 +80,25 @@ const leadsData = [
 // Stage tag colors
 const getStageColor = (stage: string) => {
   switch (stage) {
-    case 'First Call Scheduled':
+    case LEAD_STAGES.FIRST_CALL_SCHEDULED:
       return 'blue'
-    case 'Awaiting Quote':
-      return 'orange'
-    case 'Quote Sent':
-      return 'purple'
-    case 'Negotiation':
-      return 'cyan'
-    case 'Closed Won':
+    case LEAD_STAGES.QUALIFIED:
       return 'green'
-    case 'Closed Lost':
+    case LEAD_STAGES.HOT_PROSPECT:
       return 'red'
+    case LEAD_STAGES.QUOTE_SENT:
+      return 'purple'
+    case LEAD_STAGES.BOOKED:
+      return 'green'
+    case LEAD_STAGES.INITIAL_CONTACT:
+      return 'orange'
     default:
       return 'default'
   }
 }
 
 export function Leads() {
+  const navigate = useNavigate()
   const [filters, setFilters] = useState({
     salesPerson: '',
     stage: '',
@@ -113,13 +116,26 @@ export function Leads() {
   const [visibleOtherFilters, setVisibleOtherFilters] = useState<string[]>([])
   const [selectedDate, setSelectedDate] = useState(dayjs())
 
+  // Handle row click to navigate to lead details or progress based on stage
+  const handleRowClick = (record: any) => {
+    console.log('Row clicked:', record)
+    
+    // If stage is "Booked", go to lead details
+    if (record.stage === LEAD_STAGES.BOOKED) {
+      navigate(`/leads/${record.key}`)
+    } else {
+      // For all other stages, go to lead progress
+      navigate(`/leads/progress/${record.key}`)
+    }
+  }
+
   // Get unique values for filter options
   const salesPersons = useMemo(() => {
     return [...new Set(leadsData.map(lead => lead.salesPerson))]
   }, [])
 
   const stages = useMemo(() => {
-    return [...new Set(leadsData.map(lead => lead.stage))]
+    return Object.values(LEAD_STAGES)
   }, [])
 
   const cities = useMemo(() => {
@@ -716,6 +732,10 @@ export function Leads() {
               scroll={{ x: 1500 }}
               size="middle"
               className="min-w-full"
+              onRow={(record) => ({
+                onClick: () => handleRowClick(record),
+                style: { cursor: 'pointer' }
+              })}
             />
           </div>
         </Card>
