@@ -52,7 +52,8 @@ function DetailedForm({ onBack, onSave, initialData }: DetailedFormProps) {
     }, 100)
   }, [])
 
-  const handleSave = async () => {
+  const handleSave = async (e?: React.MouseEvent) => {
+    e?.preventDefault()
     try {
       setLoading(true)
       const values = await form.validateFields()
@@ -67,6 +68,7 @@ function DetailedForm({ onBack, onSave, initialData }: DetailedFormProps) {
         youtube: values.youtube
       }
 
+      console.log('Saving business info:', businessInfo)
       onSave({ businessInfo })
     } catch (error) {
       console.error('Form validation failed:', error)
@@ -232,12 +234,15 @@ function DetailedForm({ onBack, onSave, initialData }: DetailedFormProps) {
             </Button>
             
             <Button
-              type="primary"
               size="large"
-              onClick={handleSave}
+              onClick={(e) => {
+                e.preventDefault()
+                console.log('Save button clicked, mandatoryFieldsValid:', mandatoryFieldsValid)
+                handleSave(e)
+              }}
               loading={loading}
               disabled={!mandatoryFieldsValid}
-              className="px-8"
+              className="px-8 bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
             >
               Save
             </Button>

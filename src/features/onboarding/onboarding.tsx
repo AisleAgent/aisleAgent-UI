@@ -13,6 +13,8 @@ interface UserProfileData {
     website?: string
     phone?: string
     address?: string
+    instagram?: string
+    youtube?: string
   }
 }
 
@@ -32,10 +34,16 @@ export function Onboarding() {
   }
 
   const handleSave = (data: Partial<UserProfileData>) => {
+    console.log('handleSave called with data:', data)
     setUserProfileData(prev => ({ ...prev, ...data }))
     // Here you would typically save to backend
     console.log('Final user profile data:', { ...userProfileData, ...data })
-    navigate(ROUTES.LEADS)
+    console.log('Navigating to leads route:', ROUTES.LEADS)
+    
+    // Use setTimeout to ensure state update completes before navigation
+    setTimeout(() => {
+      navigate(ROUTES.LEADS)
+    }, 100)
   }
 
   const renderCurrentView = () => {

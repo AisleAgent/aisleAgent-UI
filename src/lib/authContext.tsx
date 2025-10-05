@@ -2,10 +2,8 @@ import { createContext, useContext, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { onAuthStateChanged } from 'firebase/auth'
 import { getAuth } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
 import { getFirebaseApp } from './firebase'
 import { useFirebaseUser, useStoredUser, useGoogleSignIn, useSignOut, type AuthUser } from './authQueries'
-import { ROUTES } from '../routes/routeStatics'
 
 type AuthContextValue = {
   userData: AuthUser | null
@@ -18,22 +16,21 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const navigate = useNavigate()
-  
   // React Query hooks
   const { isLoading: firebaseLoading } = useFirebaseUser()
   const { data: userData, isLoading: userLoading } = useStoredUser()
   const googleSignInMutation = useGoogleSignIn()
   const signOutMutation = useSignOut()
 
-  // Handle navigation after successful authentication
-  useEffect(() => {
-    if (userData && !userLoading) {
-      // User is authenticated, redirect to onboarding
-      console.log('✅ User authenticated, redirecting to onboarding...')
-      navigate(ROUTES.ONBOARDING)
-    }
-  }, [userData, userLoading, navigate])
+  // Handle navigation after successful authentication - REMOVED
+  // This was causing interference with manual navigation from components
+  // useEffect(() => {
+  //   if (userData && !userLoading) {
+  //     // User is authenticated, redirect to onboarding
+  //     console.log('✅ User authenticated, redirecting to onboarding...')
+  //     navigate(ROUTES.ONBOARDING)
+  //   }
+  // }, [userData, userLoading, navigate])
 
   // Sync Firebase auth state with React Query
   useEffect(() => {
