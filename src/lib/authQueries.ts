@@ -97,7 +97,7 @@ export function useVerifyGoogleToken() {
       queryClient.setQueryData(authKeys.user(), normalizedUser)
     },
     onError: (error) => {
-      console.error('❌ Token verification failed:', error)
+      console.error('❌ Token verification failed', error)
       localStorage.removeItem('auth_token')
       localStorage.removeItem('user_details')
       queryClient.setQueryData(authKeys.user(), null)
