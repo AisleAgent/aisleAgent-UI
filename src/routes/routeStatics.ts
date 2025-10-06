@@ -11,6 +11,7 @@ export const ROUTES = {
   LEAD_PROGRESS: '/leads/progress/:id',
   CALENDAR: '/calendar',
   FIXED_COST: '/fixed-cost',
+  ADD_TEAM: '/add-team',
   
   // Root and fallback
   ROOT: '/',

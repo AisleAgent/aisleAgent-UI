@@ -18,6 +18,7 @@ const LeadDetails = lazy(() => import('../features/leads/LeadDetails'))
 const LeadProgress = lazy(() => import('../features/leads/LeadProgress'))
 const Calendar = lazy(() => import('../features/calendar/Calendar'))
 const FixedCost = lazy(() => import('../features/fixed-cost/FixedCost'))
+const AddTeamMember = lazy(() => import('../features/team/AddTeamMember'))
 
 /**
  * Loading fallback component for Suspense
@@ -148,6 +149,14 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <FixedCost />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path={ROUTES.ADD_TEAM} 
+        element={
+          <ProtectedRoute>
+            <AddTeamMember />
           </ProtectedRoute>
         } 
       />

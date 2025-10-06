@@ -148,27 +148,7 @@ export function AddLead() {
    * Handle cancel and navigate back
    */
   const handleCancel = () => {
-    // Check if form has unsaved changes
-    const values = form.getFieldsValue()
-    const hasData = Object.values(values).some(value => {
-      if (value === null || value === undefined || value === '') return false
-      if (Array.isArray(value) && value.length === 0) return false
-      return true
-    })
-
-    if (hasData) {
-      Modal.confirm({
-        title: 'Unsaved Changes',
-        content: 'You have unsaved changes. Your progress will be automatically saved as a draft.',
-        okText: 'Leave',
-        cancelText: 'Stay',
-        onOk: () => {
-          navigate('/leads')
-        }
-      })
-    } else {
-      navigate('/leads')
-    }
+    navigate('/leads')
   }
 
   // Source options

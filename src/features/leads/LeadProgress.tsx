@@ -183,20 +183,19 @@ export function LeadProgress() {
       <div className="px-6 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <Button 
-                icon={<ArrowLeftOutlined />} 
-                onClick={() => navigate('/leads')}
-                className="flex items-center"
-              >
-                Back to Leads
-              </Button>
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold text-gray-900">Lead Progress</h1>
+              <Tag color={getStageColor(leadData.stage)} className="text-sm px-3 py-1">
+                {leadData.stage}
+              </Tag>
             </div>
-            <Tag color={getStageColor(leadData.stage)} className="text-sm px-3 py-1">
-              {leadData.stage}
-            </Tag>
+            <Button 
+              icon={<ArrowLeftOutlined />} 
+              onClick={() => navigate('/leads')}
+            >
+              Back to Leads
+            </Button>
           </div>
 
           {/* Lead Information Card */}
@@ -256,16 +255,6 @@ export function LeadProgress() {
               }))}
             />
           </Card>
-
-          {/* Action Buttons */}
-          <div className="mt-6 flex justify-end space-x-3">
-            <Button size="large">
-              Update Progress
-            </Button>
-            <Button type="primary" size="large">
-              Next Action
-            </Button>
-          </div>
         </div>
       </div>
     </div>

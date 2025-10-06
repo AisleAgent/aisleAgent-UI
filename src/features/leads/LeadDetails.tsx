@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { Button, Card, Spin, Space, Divider, Typography, Row, Col } from 'antd'
-import { ArrowLeftOutlined, EditOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Navbar } from '../../components/Navbar'
 import { LEAD_STAGES } from '../../lib/enums'
 import { EventList } from './components/EventList'
@@ -314,9 +314,6 @@ export function LeadDetails() {
               </div>
               <Text type="secondary">Project Expense Details</Text>
             </div>
-            <Button type="primary" icon={<EditOutlined />} className="bg-purple-600 border-purple-600 hover:bg-purple-700">
-              Edit
-            </Button>
           </div>
 
           <Row gutter={[24, 24]}>

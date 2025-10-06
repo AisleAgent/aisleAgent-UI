@@ -19,7 +19,8 @@ export function Navbar() {
     { key: ROUTES.DASHBOARD, label: 'Dashboard' },
     { key: ROUTES.LEADS, label: 'Leads' },
     { key: ROUTES.CALENDAR, label: 'Calendar' },
-    { key: ROUTES.FIXED_COST, label: 'Fixed Cost' }
+    { key: ROUTES.FIXED_COST, label: 'Fixed Cost' },
+    { key: ROUTES.ADD_TEAM, label: 'Add Team' }
   ]
 
   const handleNavigation = (path: string) => {
