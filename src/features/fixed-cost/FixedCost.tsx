@@ -1,7 +1,9 @@
-import { memo, useState, useMemo, useCallback } from 'react'
+import { memo, useState, useMemo, useCallback, useEffect } from 'react'
 import type { FC } from 'react'
-import { Typography, Space, Collapse } from 'antd'
+import { Typography, Space, Collapse, Alert, Button, Modal } from 'antd'
+import { CheckCircleOutlined, ClockCircleOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Navbar } from '../../components/Navbar'
+import { useLocalStorage, useDebounce } from '../../hooks'
 import { EmployeeSalaryCard } from './components/EmployeeSalaryCard'
 import { EmployeeSalaryForm } from './components/EmployeeSalaryForm'
 import { SoftwareCostCard } from './components/SoftwareCostCard'
@@ -32,6 +34,17 @@ const { Title, Paragraph, Text } = Typography
  * @returns FixedCost page component
  */
 const FixedCost: FC = memo(() => {
+  // Auto-save state management
+  const [showDraftAlert, setShowDraftAlert] = useState(false)
+  const [draftData, setDraftData, clearDraftData] = useLocalStorage<FixedCostData | null>(
+    'fixed-cost-all-data',
+    null
+  )
+  const [lastSaved, setLastSaved] = useLocalStorage<number | null>(
+    'fixed-cost-all-data_timestamp',
+    null
+  )
+
   // State management for all categories
   const [fixedCostData, setFixedCostData] = useState<FixedCostData>({
     employeeSalary: { mode: 'total', totalSalary: 0 },
@@ -47,6 +60,89 @@ const FixedCost: FC = memo(() => {
   const [editingUtilities, setEditingUtilities] = useState(false)
   const [editingAdvertisements, setEditingAdvertisements] = useState(false)
   const [editingMiscellaneous, setEditingMiscellaneous] = useState(false)
+
+  // Debounced data for auto-save
+  const debouncedData = useDebounce(fixedCostData, 1000)
+
+  /**
+   * Check for existing draft on mount
+   */
+  useEffect(() => {
+    if (draftData) {
+      setShowDraftAlert(true)
+    }
+  }, [draftData])
+
+  /**
+   * Auto-save data when it changes (debounced)
+   */
+  useEffect(() => {
+    // Check if data has meaningful content
+    const hasData = 
+      (debouncedData.employeeSalary.totalSalary && debouncedData.employeeSalary.totalSalary > 0) ||
+      (debouncedData.employeeSalary.employees && debouncedData.employeeSalary.employees.length > 0) ||
+      (debouncedData.softwareCost.totalCost && debouncedData.softwareCost.totalCost > 0) ||
+      (debouncedData.softwareCost.software && debouncedData.softwareCost.software.length > 0) ||
+      debouncedData.utilities.length > 0 ||
+      debouncedData.advertisements.length > 0 ||
+      debouncedData.miscellaneous.length > 0
+
+    if (hasData) {
+      setDraftData(debouncedData)
+      setLastSaved(Date.now())
+    }
+  }, [debouncedData, setDraftData, setLastSaved])
+
+  /**
+   * Get formatted last saved time
+   */
+  const getLastSavedText = useCallback(() => {
+    if (!lastSaved) return null
+    
+    const now = Date.now()
+    const diff = now - lastSaved
+    
+    if (diff < 60000) return 'Just now'
+    if (diff < 3600000) {
+      const minutes = Math.floor(diff / 60000)
+      return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`
+    }
+    if (diff < 86400000) {
+      const hours = Math.floor(diff / 3600000)
+      return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`
+    }
+    const days = Math.floor(diff / 86400000)
+    return `${days} ${days === 1 ? 'day' : 'days'} ago`
+  }, [lastSaved])
+
+  const lastSavedText = getLastSavedText()
+
+  /**
+   * Handle draft restoration
+   */
+  const handleRestoreDraft = useCallback(() => {
+    if (draftData) {
+      setFixedCostData(draftData)
+      setShowDraftAlert(false)
+    }
+  }, [draftData])
+
+  /**
+   * Handle draft dismissal
+   */
+  const handleDismissDraft = useCallback(() => {
+    Modal.confirm({
+      title: 'Discard Draft?',
+      content: 'Are you sure you want to discard the saved draft? This action cannot be undone.',
+      okText: 'Discard',
+      okType: 'danger',
+      cancelText: 'Keep Draft',
+      onOk: () => {
+        clearDraftData()
+        setShowDraftAlert(false)
+      }
+    })
+  }, [clearDraftData])
 
   /**
    * Calculate employee salary total
@@ -173,14 +269,57 @@ const FixedCost: FC = memo(() => {
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="space-y-6">
           {/* Page Header */}
-          <div>
-            <Title level={1} className="!text-3xl !font-bold !text-gray-900">
-              Fixed Cost Management
-            </Title>
-            <Paragraph className="!mt-2 !text-gray-600">
-              Manage your monthly recurring expenses across all categories
-            </Paragraph>
+          <div className="flex items-center justify-between">
+            <div>
+              <Title level={1} className="!text-3xl !font-bold !text-gray-900 !mb-2">
+                Fixed Cost Management
+              </Title>
+              <Paragraph className="!mt-0 !text-gray-600">
+                Manage your monthly recurring expenses across all categories
+              </Paragraph>
+            </div>
+            {/* Auto-save indicator */}
+            {lastSavedText && (
+              <Space size="small" className="text-gray-500">
+                <CheckCircleOutlined className="text-green-500" />
+                <Text type="secondary" className="text-sm">
+                  Draft saved {lastSavedText}
+                </Text>
+              </Space>
+            )}
           </div>
+
+          {/* Draft restoration alert */}
+          {showDraftAlert && (
+            <Alert
+              message="Draft Found"
+              description="We found previously saved data. Would you like to restore it?"
+              type="info"
+              showIcon
+              icon={<ClockCircleOutlined />}
+              action={
+                <Space>
+                  <Button 
+                    size="small" 
+                    type="primary"
+                    onClick={handleRestoreDraft}
+                  >
+                    Restore Draft
+                  </Button>
+                  <Button 
+                    size="small" 
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={handleDismissDraft}
+                  >
+                    Discard
+                  </Button>
+                </Space>
+              }
+              closable
+              onClose={() => setShowDraftAlert(false)}
+            />
+          )}
 
           {/* Financial Summary Accordion */}
           <Collapse

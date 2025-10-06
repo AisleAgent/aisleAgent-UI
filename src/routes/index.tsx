@@ -11,8 +11,9 @@ import { Spin } from 'antd'
  */
 const Login = lazy(() => import('../features/login/login'))
 const Onboarding = lazy(() => import('../features/onboarding/onboarding'))
-const Dashboard = lazy(() => import('../features/dashboard/dashboard'))
+const Dashboard = lazy(() => import('../features/dashboard'))
 const Leads = lazy(() => import('../features/leads/Leads'))
+const AddLead = lazy(() => import('../features/leads/AddLead'))
 const LeadDetails = lazy(() => import('../features/leads/LeadDetails'))
 const LeadProgress = lazy(() => import('../features/leads/LeadProgress'))
 const Calendar = lazy(() => import('../features/calendar/Calendar'))
@@ -107,6 +108,14 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <Leads />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path={ROUTES.ADD_LEAD} 
+        element={
+          <ProtectedRoute>
+            <AddLead />
           </ProtectedRoute>
         } 
       />

@@ -1,0 +1,7 @@
+
+> app@0.0.0 build
+> tsc -b && vite build
+
+vite.config.ts(65,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'compress' does not exist in type 'TerserOptions'.

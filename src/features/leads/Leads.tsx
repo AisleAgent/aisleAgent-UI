@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import dayjs from 'dayjs'
 import { Navbar } from '../../components/Navbar'
-import { Card, Table, Tag, Select, Input, Button, Dropdown, Checkbox, Calendar, Popover } from 'antd'
+import { Card, Table, Tag, Select, Input, Button, Dropdown, Checkbox, Modal } from 'antd'
 import { SearchOutlined, ClearOutlined, FilterOutlined, DownOutlined, CalendarOutlined } from '@ant-design/icons'
 import { LEAD_STAGES } from '../../lib/enums'
+import { DateRangeSelector } from '../../components/DateRangeSelector'
+import type { DateRangeSelection } from '../../components/DateRangeSelector'
 
 const { Option } = Select
 
@@ -114,7 +115,8 @@ export function Leads() {
   })
 
   const [visibleOtherFilters, setVisibleOtherFilters] = useState<string[]>([])
-  const [selectedDate, setSelectedDate] = useState(dayjs())
+  const [dateRangeModalVisible, setDateRangeModalVisible] = useState(false)
+  const [selectedDateRange, setSelectedDateRange] = useState<DateRangeSelection | null>(null)
 
   // Handle row click to navigate to lead details or progress based on stage
   const handleRowClick = (record: any) => {
@@ -216,6 +218,37 @@ export function Leads() {
     })
     setVisibleOtherFilters([])
   }
+  
+  /**
+   * Handle date range selection change
+   */
+  const handleDateRangeChange = useCallback((selection: DateRangeSelection) => {
+    setSelectedDateRange(selection)
+    console.log('Date range selected:', selection)
+  }, [])
+  
+  /**
+   * Format date range for display
+   */
+  const formattedDateRange = useMemo(() => {
+    if (!selectedDateRange) return 'Select Period'
+    
+    const { startDate, endDate, granularity } = selectedDateRange
+    
+    if (!startDate || !endDate) return 'Select Period'
+    
+    const options: Intl.DateTimeFormatOptions = 
+      granularity === 'day' 
+        ? { month: 'short', day: 'numeric', year: 'numeric' }
+        : granularity === 'month'
+        ? { month: 'short', year: 'numeric' }
+        : { year: 'numeric' }
+    
+    const start = startDate.toLocaleDateString('en-US', options)
+    const end = endDate.toLocaleDateString('en-US', options)
+    
+    return `${start} - ${end}`
+  }, [selectedDateRange])
 
   // Other filters dropdown menu
   const otherFiltersMenu = {
@@ -343,96 +376,36 @@ export function Leads() {
       {/* Main Content */}
       <div className="mx-auto max-w-7xl px-4 py-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Dashboard
-          </h1>
-          <p className="text-gray-600">
-            Here's a summary of your leads and their progress.
-          </p>
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Lead Management
+            </h1>
+            <p className="text-gray-600">
+              Track and manage your leads throughout the sales pipeline.
+            </p>
+          </div>
+          <Button 
+            type="primary" 
+            size="large"
+            onClick={() => navigate('/add-lead')}
+            className="self-start sm:self-auto"
+          >
+            + Add Lead
+          </Button>
         </div>
 
         {/* Lead Metrics */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-gray-900">Lead Metrics</h2>
-            <Popover
-              content={
-                <div style={{ width: 320 }}>
-                  <Card size="small" style={{ padding: 0 }}>
-                    <Calendar
-                      fullscreen={false}
-                      value={selectedDate}
-                      onChange={(date) => {
-                        setSelectedDate(date)
-                        console.log('Selected date:', date.format('YYYY-MM-DD'))
-                      }}
-                      headerRender={({ value, type, onChange, onTypeChange }) => (
-                        <div style={{ padding: '8px 0', borderBottom: '1px solid #f0f0f0' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                              <Select
-                                size="small"
-                                value={value.format('YYYY')}
-                                onChange={(year) => onChange(value.year(Number(year)))}
-                                style={{ width: 60 }}
-                              >
-                                {Array.from({ length: 10 }, (_, i) => {
-                                  const year = new Date().getFullYear() - 5 + i;
-                                  return (
-                                    <Option key={year} value={year.toString()}>
-                                      {year}
-                                    </Option>
-                                  );
-                                })}
-                              </Select>
-                              <Select
-                                size="small"
-                                value={value.format('MMM')}
-                                onChange={(month) => {
-                                  const monthIndex = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].indexOf(month);
-                                  onChange(value.month(monthIndex));
-                                }}
-                                style={{ width: 60 }}
-                              >
-                                {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(month => (
-                                  <Option key={month} value={month}>
-                                    {month}
-                                  </Option>
-                                ))}
-                              </Select>
-                            </div>
-                            <div style={{ display: 'flex', gap: '4px' }}>
-                              <Button
-                                type={type === 'month' ? 'primary' : 'default'}
-                                size="small"
-                                onClick={() => onTypeChange(type === 'month' ? 'date' as any : 'month' as any)}
-                              >
-                                Month
-                              </Button>
-                              <Button
-                                type={type === 'year' ? 'primary': 'default'}
-                                size="small"
-                                onClick={() => onTypeChange(type === 'year' ? 'date' as any : 'year' as any)}
-                              >
-                                Year
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    />
-                  </Card>
-                </div>
-              }
-              title="Select Date"
-              trigger="click"
-              placement="bottomRight"
+            <Button 
+              icon={<CalendarOutlined />}
+              onClick={() => setDateRangeModalVisible(true)}
+              size="large"
             >
-              <Button icon={<CalendarOutlined />}>
-                {selectedDate.format('MMM YYYY')}
-              </Button>
-            </Popover>
+              {formattedDateRange}
+            </Button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -739,6 +712,34 @@ export function Leads() {
             />
           </div>
         </Card>
+        
+        {/* Date Range Selector Modal */}
+        <Modal
+          title="Select Time Period"
+          open={dateRangeModalVisible}
+          onCancel={() => setDateRangeModalVisible(false)}
+          footer={null}
+          width={700}
+          centered
+        >
+          <DateRangeSelector
+            value={selectedDateRange || undefined}
+            onChange={handleDateRangeChange}
+            enableDaySelection
+            enableMonthSelection
+            enableYearSelection
+            size="large"
+          />
+          <div className="mt-6 flex justify-end">
+            <Button 
+              type="primary" 
+              size="large"
+              onClick={() => setDateRangeModalVisible(false)}
+            >
+              Apply
+            </Button>
+          </div>
+        </Modal>
       </div>
     </div>
   )
