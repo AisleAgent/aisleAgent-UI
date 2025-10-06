@@ -4,7 +4,7 @@ import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, Inte
 // Create base Axios instance
 const createAxiosInstance = (): AxiosInstance => {
   const instance = axios.create({
-    baseURL: 'https://www.shadigpt.ai/auth/config',
+    baseURL: 'https://www.shadigpt.ai',
     timeout: 10000,
     headers: {
       'Content-Type': 'application/json',

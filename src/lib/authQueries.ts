@@ -72,7 +72,7 @@ export function useVerifyGoogleToken() {
         return await mockVerifyGoogleToken(idToken)
       } else {
         console.log('🚀 Using real authentication service for production')
-        const response = await apiClient.post<VerifyResponse>('/api/v1/auth/google/verify', { idToken })
+        const response = await apiClient.post<VerifyResponse>('/auth/google/verify', { idToken })
         return response.data
       }
     },
